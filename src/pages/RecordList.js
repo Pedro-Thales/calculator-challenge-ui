@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2'
-import axios from 'axios'
+import axiosInstance from '../AxiosConfig'
 import Layout from "../components/Layout"
 
 import Table from '@mui/material/Table';
@@ -34,20 +34,19 @@ function RecordList(props) {
         fetchUserBalance()
     }, [])
 
-    const axiosInstance = axios.create({
-        baseURL: 'http://localhost:8080',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-
     const fetchUserBalance = () => {
         axiosInstance.get('/calculator/balance')
             .then(function (response) {
                 props.setBalance(response.data);
             })
             .catch(function (error) {
-                console.log(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error while trying to fetch balance',
+                    text: error.response == null ? '' : error.response.data,
+                    showConfirmButton: false,
+                    timer: 3000
+                })
             })
     }
 
@@ -58,7 +57,13 @@ function RecordList(props) {
                 setRecordList(response.data);
             })
             .catch(function (error) {
-                console.log(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error while trying to fetch records',
+                    text: error.response == null ? '' : error.response.data,
+                    showConfirmButton: false,
+                    timer: 3000
+                })
             })
     }
 
@@ -164,7 +169,7 @@ function RecordList(props) {
                                             <TableCell sx={{ fontSize: '1.1rem' }}>{record.operationResponse}</TableCell>
                                             <TableCell sx={{ fontSize: '1.1rem' }}>{new Date(record.date).toLocaleString('en-US')}</TableCell>
                                             <TableCell align='center'>
-                                                <IconButton color='secondary' onClick={() => handleDelete(record.id)}>
+                                                <IconButton id='delete' color='secondary' onClick={() => handleDelete(record.id)}>
                                                     <DeleteIcon />
                                                 </IconButton>
                                             </TableCell>

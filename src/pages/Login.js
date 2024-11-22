@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2'
-import axios from 'axios'
+import axiosInstance from '../AxiosConfig'
 import Layout from "../components/Layout"
 
 function Login() {
+
     const navigate = useNavigate();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
     const [isSaving, setIsSaving] = useState(false);
@@ -16,15 +18,11 @@ function Login() {
         }
     }, [])
 
-    const instance = axios.create({
-        baseURL: 'http://localhost:8080',
-    });
-
     const handleSave = () => {
 
         setIsSaving(true);
 
-        instance.post('/auth/login', {
+        axiosInstance.post('/auth/login', {
             username: email,
             password: password
         })
@@ -60,7 +58,7 @@ function Login() {
                     <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
                         <div className="card border-0 shadow rounded-3 my-5">
                             <div className="card-body p-4 p-sm-5">
-                                <h5 className="card-title text-center mb-5 fw-light fs-5">Sign In</h5>
+                                <h5 className="card-title text-center mb-5 fw-light fs-5">Login</h5>
                                 <form>
                                     <div className="form-floating mb-3">
                                         <input
@@ -71,7 +69,7 @@ function Login() {
                                             id="floatingInput"
                                             placeholder="name@example.com"
                                         />
-                                        <label htmlFor="floatingInput">Username(email)</label>
+                                        <label htmlFor="floatingInput">Email</label>
                                     </div>
                                     <div className="form-floating mb-3">
                                         <input

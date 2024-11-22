@@ -17,7 +17,8 @@
     "react-router-dom": "^6.11.0",
     "react-scripts": "5.0.1",
     "sweetalert2": "^11.7.3",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "axios-mock-adapter":"2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,6 +42,20 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^axios$": "axios/dist/node/axios.cjs"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+        "node_modules",
+        "test-config",
+        "interfaces",
+        "<rootDir>/src/index.js"
     ]
   }
 }
