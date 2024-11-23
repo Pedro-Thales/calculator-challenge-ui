@@ -2,11 +2,11 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import axiosInstance from '../AxiosConfig'
+import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import RecordCreate from './RecordCreate';
 
-const mockAxios = new MockAdapter(axiosInstance);
+const mockAxios = new MockAdapter(axios);
 
 describe('RecordCreate Component', () => {
     const mockSetBalance = jest.fn();

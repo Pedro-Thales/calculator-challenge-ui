@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2'
-import axiosInstance from '../AxiosConfig'
+import axios from 'axios'
 import { Button, FormHelperText, Grid, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import HandleError from '../ErrorHandler'
 
 
 function RecordCreate(props) {
@@ -19,10 +20,21 @@ function RecordCreate(props) {
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
 
-    useEffect(() => {
+    const axiosInstance = axios.create({
+        baseURL: 'http://localhost:8080',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const verifyStorage = () => {
         if (localStorage.getItem('token') == null) {
             navigate("/");
         }
+    }
+
+    useEffect(() => {
+        verifyStorage()
     }, [])
 
     const handleCancel = () => {
@@ -35,13 +47,8 @@ function RecordCreate(props) {
                 props.setBalance(response.data);
             })
             .catch(function (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error while trying to fetch balance',
-                    text: error.response == null ? '' : error.response.data,
-                    showConfirmButton: false,
-                    timer: 3000
-                })
+                HandleError(error, 'Error while trying to fetch balance')
+                verifyStorage()
             })
     }
 
@@ -71,25 +78,14 @@ function RecordCreate(props) {
         setIsSaving(true);
 
         if (first_value > max_value || first_value < min_value) {
-            Swal.fire({
-                icon: 'error',
-                title: 'First value not allowed!',
-                text: 'Max value is: ' + max_value + ' Min Value is: ' + min_value,
-                showConfirmButton: false,
-                timer: 3000
-            })
+
+            HandleError(null, 'First value not allowed!', 'Max value is: ' + max_value + ' Min Value is: ' + min_value)
             setIsSaving(false);
             return;
         }
 
         if (second_value > max_value || second_value < min_value) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Second value not allowed!',
-                text: 'Max value is: ' + max_value + ' Min Value is: ' + min_value,
-                showConfirmButton: false,
-                timer: 3000
-            })
+            HandleError(null, 'Second value not allowed!', 'Max value is: ' + max_value + ' Min Value is: ' + min_value)
             setIsSaving(false);
             return;
         }
@@ -116,14 +112,9 @@ function RecordCreate(props) {
 
             })
             .catch(function (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'An Error Occured! ',
-                    text: error.response == null ? '' : error.response.data,
-                    showConfirmButton: false,
-                    timer: 2000
-                })
-                setIsSaving(false)
+                HandleError(error, 'Error while trying to save record');
+                setIsSaving(false);
+                verifyStorage();
                 fetchUserBalance();
             });
     }

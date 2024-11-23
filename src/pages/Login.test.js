@@ -2,11 +2,12 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import axiosInstance from '../AxiosConfig'
+import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Login from './Login';
 
-const mockAxios = new MockAdapter(axiosInstance);
+const mockAxios = new MockAdapter(axios);
+
 
 describe('Login Component', () => {
     beforeEach(() => {
@@ -27,8 +28,9 @@ describe('Login Component', () => {
     });
 
     test('handles successful login', async () => {
-        mockAxios.onPost('/auth/login').reply(200, { token: 'test-token' });
 
+        mockAxios.onPost('/auth/login').reply(200, { token: 'test-token' });
+        
         render(
             <Router>
                 <Login />
@@ -42,7 +44,8 @@ describe('Login Component', () => {
             target: { value: 'password123' },
         });
 
-        fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+        const loginButton = screen.getByRole('button', { name: /sign in/i });
+        fireEvent.click(loginButton);
 
         await waitFor(() => {
             expect(localStorage.getItem('user')).toBe('test@example.com');
@@ -70,7 +73,7 @@ describe('Login Component', () => {
         fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
         await waitFor(() => {
-            expect(screen.getByText(/an error occured!/i)).toBeInTheDocument();
+            expect(screen.getByText(/An unknown error occurred/i)).toBeInTheDocument();
         });
     });
 

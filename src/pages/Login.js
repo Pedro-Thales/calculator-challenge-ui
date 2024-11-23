@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2'
-import axiosInstance from '../AxiosConfig'
+import axios from 'axios'
 import Layout from "../components/Layout"
+import HandleError from '../ErrorHandler'
 
 function Login() {
 
@@ -12,12 +13,17 @@ function Login() {
     const [password, setPassword] = useState('')
     const [isSaving, setIsSaving] = useState(false);
 
+    const axiosInstance = axios.create({
+        baseURL: 'http://localhost:8080',
+    });
+
     useEffect(() => {
         if (localStorage.getItem('user') && localStorage.getItem('user') != null) {
             navigate("/dashboard");
         }
     }, [])
 
+    
     const handleSave = () => {
 
         setIsSaving(true);
@@ -35,18 +41,11 @@ function Login() {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                navigate("/dashboard");
                 setIsSaving(false);
-                setEmail('')
-                setPassword('')
+                navigate("/dashboard");
             })
             .catch(function (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'An Error Occured!',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
+                HandleError(error)
                 setIsSaving(false)
             });
     }

@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import RecordList from './RecordList';
 import MockAdapter from 'axios-mock-adapter';
-import axiosInstance from '../AxiosConfig'
+import axios from 'axios';
 import Swal from 'sweetalert2';
 
 jest.mock('sweetalert2', () => ({
@@ -12,7 +12,7 @@ jest.mock('sweetalert2', () => ({
 
 describe('RecordList Component', () => {
     const mockSetBalance = jest.fn();
-    const mockAxios = new MockAdapter(axiosInstance);
+    const mockAxios = new MockAdapter(axios);
 
     const mockRecords = [
         { id: 1, operationType: 'Addition', operationResponse: '10', date: '2024-11-21T12:00:00Z' },

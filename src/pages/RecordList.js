@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2'
-import axiosInstance from '../AxiosConfig'
+import axios from 'axios'
 import Layout from "../components/Layout"
 
 import Table from '@mui/material/Table';
@@ -14,22 +14,34 @@ import TablePagination from '@mui/material/TablePagination';
 import DeleteIcon from '@mui/icons-material/Delete'
 
 import { Box, IconButton, TextField } from '@mui/material'
+import HandleError from '../ErrorHandler'
 
 
 function RecordList(props) {
     const navigate = useNavigate();
     const [recordList, setRecordList] = useState([])
-    const token = localStorage.getItem('token');
 
     const [filterText, setFilterText] = useState("")
 
     const [page, setPage] = useState(0);  // Current page index
     const [rowsPerPage, setRowsPerPage] = useState(5);  // Number of rows per page
 
-    useEffect(() => {
+    const verifyStorage = () => {
         if (localStorage.getItem('token') == null) {
             navigate("/");
         }
+    }
+
+    const token = localStorage.getItem('token');
+    const axiosInstance = axios.create({
+        baseURL: 'http://localhost:8080',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    useEffect(() => {
+        verifyStorage()
         fetchRecordList()
         fetchUserBalance()
     }, [])
@@ -40,16 +52,10 @@ function RecordList(props) {
                 props.setBalance(response.data);
             })
             .catch(function (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error while trying to fetch balance',
-                    text: error.response == null ? '' : error.response.data,
-                    showConfirmButton: false,
-                    timer: 3000
-                })
+                HandleError(error, 'Error while trying to fetch balance')
+                verifyStorage()
             })
     }
-
 
     const fetchRecordList = () => {
         axiosInstance.get('/calculator/records')
@@ -57,13 +63,8 @@ function RecordList(props) {
                 setRecordList(response.data);
             })
             .catch(function (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error while trying to fetch records',
-                    text: error.response == null ? '' : error.response.data,
-                    showConfirmButton: false,
-                    timer: 3000
-                })
+                HandleError(error, 'Error while trying to fetch records')
+                verifyStorage()
             })
     }
 
@@ -90,12 +91,8 @@ function RecordList(props) {
                         fetchUserBalance()
                     })
                     .catch(function (error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'An Error Occured!',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
+                        HandleError(error, 'Error while trying to delete a record')
+                        verifyStorage()
                     });
             }
         })
