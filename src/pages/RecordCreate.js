@@ -35,6 +35,7 @@ function RecordCreate(props) {
 
     useEffect(() => {
         verifyStorage()
+        fetchUserBalance()
     }, [])
 
     const handleCancel = () => {

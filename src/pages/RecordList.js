@@ -133,7 +133,7 @@ function RecordList(props) {
 
                         <TableContainer>
 
-                            <Box display="flex" justifyContent="flex-end" >
+                            <Box sx={{ mt: 0.5+'em' }} display="flex" justifyContent="flex-end" >
                                 <TextField
                                     label="Search Records"
                                     variant="outlined"
@@ -164,7 +164,7 @@ function RecordList(props) {
                                             <TableCell sx={{ fontSize: '1.1rem' }}>{record.operationType}</TableCell>
 
                                             <TableCell sx={{ fontSize: '1.1rem' }}>{record.operationResponse}</TableCell>
-                                            <TableCell sx={{ fontSize: '1.1rem' }}>{new Date(record.date).toLocaleString('en-US')}</TableCell>
+                                            <TableCell sx={{ fontSize: '1.1rem' }}>{new Date(record.date + 'Z').toLocaleString('en-US')}</TableCell>
                                             <TableCell align='center'>
                                                 <IconButton id='delete' color='secondary' onClick={() => handleDelete(record.id)}>
                                                     <DeleteIcon />
