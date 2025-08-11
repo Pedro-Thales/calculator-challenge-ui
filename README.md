@@ -1,6 +1,6 @@
 # calculator-challenge-ui
 
-This is a React project repository for the calculator-challenge proposed by NTD Software.
+This is a React project repository for a calculator-challenge.
 
 ## Getting Started
 
